@@ -34,11 +34,16 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             {singleTask.description}
           </p>
           <div className="w-full flex flex-row">
-            <div className="w-1/2 flex flex-row items-center text-2xl">
+            <div className="w-1/3 flex flex-row items-center text-2xl">
               {<BiImages className="cursor-pointer" />}
             </div>
-            <div className="w-1/2 flex flex-row justify-end items-center">
-              <div className="w-8 h-8 bg-gray-300 rounded-full cursor-pointer"></div>
+            <div className="w-2/3 flex flex-row justify-end items-center">
+              {singleTask.assigned.map((singleUser) => (
+                <div
+                  className="w-8 h-8 bg-gray-300 rounded-full cursor-pointer mx-1"
+                  key={singleUser._id}
+                ></div>
+              ))}
             </div>
           </div>
         </div>

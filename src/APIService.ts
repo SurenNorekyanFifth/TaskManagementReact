@@ -8,8 +8,35 @@ export class APIService {
       `${apiUrl}/auth/login`,
       "POST",
       {},
-      { name, password }
+      { name, password },
     );
+  }
+
+  static async postTasks(
+    currentListId: string,
+    values: {
+      title: any;
+      description: any;
+      assigneeId: any;
+      assignedId: any;
+    },
+  ) {
+    const payload = {
+      title: values.title,
+      description: values.description,
+      assigneeId: String(values.assigneeId),
+      assignedId: String(values.assignedId),
+    };
+    return await request(
+      `${apiUrl}/lists/${currentListId}/tasks`,
+      "POST",
+      {},
+      payload,
+    );
+  }
+
+  static async postList(payload: { Tasks: any[]; name: any }) {
+    return await request(`http://localhost:3000/lists`, "POST", {}, payload);
   }
 
   static async getProfile() {
@@ -29,7 +56,7 @@ export async function request(
   method: string = "GET",
   headers: any = {},
   body: any = null,
-  credentials?: RequestCredentials
+  credentials?: RequestCredentials,
 ) {
   const defaultHeaders = {
     "Content-Type": "application/json",
@@ -55,7 +82,7 @@ export async function reqAuth(
   url: string,
   method: string,
   headers: any = {},
-  body: any = null
+  body: any = null,
 ) {
   const allHeaders = {
     "Content-Type": "application/json",

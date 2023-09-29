@@ -5,11 +5,14 @@ import { AddCardModal } from "../modals/AddCardModal";
 import { EditTaskModal } from "../modals/EditTaskModal";
 import { useAuth } from "../Context/AuthContext";
 import { TaskCard } from "./TaskCard";
+import { APIService } from "../APIService";
 
 interface TaskProps {
   index: number;
   currentList: TaskList;
 }
+const apiUrl: string | undefined = process.env.REACT_APP_API_URL;
+
 export const TaskListComponent: React.FC<TaskProps> = ({ currentList }) => {
   const { tasksList } = useAuth();
   const [isAddCardModalOpen, setIsAddCardModalOpen] = useState(false);
@@ -21,7 +24,6 @@ export const TaskListComponent: React.FC<TaskProps> = ({ currentList }) => {
   }, []);
   useEffect(() => {
     setLocalList(currentList);
-    console.log("TaskListComponent taskList updated");
   }, [tasksList]);
 
   const openAddCardModal = () => {
@@ -45,30 +47,13 @@ export const TaskListComponent: React.FC<TaskProps> = ({ currentList }) => {
       assigneeId: any;
       assignedId: any;
     },
-    { resetForm }: any
+    { resetForm }: any,
   ) => {
-    const payload = {
-      title: values.title,
-      description: values.description,
-      assigneeId: String(values.assigneeId),
-      assignedId: String(values.assignedId),
-    };
-    const response = await fetch(
-      `http://localhost:3000/lists/${currentList._id}/tasks`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      }
-    );
-    if (response.ok) {
+    const response = await APIService.postTasks(currentList._id, values);
+    if (response) {
       resetForm();
       closeAddCardModal();
-      const updatedResponse = await fetch(
-        `http://localhost:3000/lists/${currentList._id}`
-      );
+      const updatedResponse = await fetch(`${apiUrl}/lists/${currentList._id}`);
       if (updatedResponse.ok) {
         const updatedList = await updatedResponse.json();
         setLocalList(updatedList);

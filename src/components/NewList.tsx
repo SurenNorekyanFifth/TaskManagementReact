@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import { Modal } from "antd";
+import { APIService } from "../APIService";
 
 export const NewList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,20 +24,11 @@ export const NewList = () => {
         name: values.name,
         Tasks: [],
       };
+      const response = await APIService.postList(payload);
 
-      const response = await fetch("http://localhost:3000/lists", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (response.ok) {
+      if (response) {
         resetForm();
         closeModal();
-      } else {
-        console.error("Failed to create a new task list");
       }
     } catch (error) {
       console.error("Error:", error);
