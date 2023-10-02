@@ -11,6 +11,9 @@ export interface Task {
   description: string;
   assignee: User;
   assigned: User[];
+  dueTo: {
+    date: Date;
+  };
   [key: string]: any; // Add an index signature to allow string indexing
 }
 
