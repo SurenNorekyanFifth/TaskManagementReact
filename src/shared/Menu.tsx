@@ -3,6 +3,7 @@ import { BsListTask } from "react-icons/bs";
 import { GrChapterAdd } from "react-icons/gr";
 import { useAuth } from "../Context/AuthContext";
 import { APIService } from "../APIService";
+import { UserInfo } from "./UserInfo";
 
 export const Menu = () => {
   const { user, usersList, fetchPosts } = useAuth();
@@ -33,7 +34,7 @@ export const Menu = () => {
         </div>
         <div className="w-1/2 flex flex-row justify-center items-center text-5xl px-8">
           <p className="text-2xl pr-4">{user?.name}</p>
-          <div className="w-16 h-16 bg-gray-300 border-2 rounded-full cursor-pointer"></div>
+          {user ? <UserInfo user={user} width="16" height="16" /> : null}
         </div>
       </div>
     </div>

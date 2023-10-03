@@ -9,6 +9,7 @@ import { useAuth } from "../Context/AuthContext";
 import { BsCalendar, BsPersonAdd } from "react-icons/bs";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { UserInfo } from "../shared/UserInfo";
 
 interface EditTaskModalProps {
   isEditTaskModalOpen: boolean;
@@ -184,13 +185,7 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
             <p className="w-full text-xl px-2 py-4">Assigned Users</p>
             <div className="w-full flex flex-row text-lg px-2">
               {currentTask?.assigned.map((assignedUser) => (
-                <div
-                  className="flex flex-row items-center mx-2"
-                  key={assignedUser._id}
-                >
-                  <div className="w-8 h-8 bg-gray-300 rounded-full mr-2"></div>
-                  <p>{assignedUser.name}</p>
-                </div>
+                <UserInfo user={assignedUser} key={assignedUser?._id} />
               ))}
             </div>
             <p className="w-full flex flex-row items-center text-xl px-2 py-4 my-4">

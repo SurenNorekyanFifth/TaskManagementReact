@@ -2,6 +2,7 @@ import { BiImages } from "react-icons/bi";
 import React from "react";
 import { Task } from "../models/models";
 import { Draggable } from "react-beautiful-dnd";
+import { UserInfo } from "./UserInfo";
 
 interface TaskCardProps {
   singleTask: Task;
@@ -39,10 +40,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             </div>
             <div className="w-2/3 flex flex-row justify-end items-center">
               {singleTask.assigned.map((singleUser) => (
-                <div
-                  className="w-8 h-8 bg-gray-300 rounded-full cursor-pointer mx-1"
-                  key={singleUser._id}
-                ></div>
+                <UserInfo user={singleUser} key={singleUser?._id} />
               ))}
             </div>
           </div>
