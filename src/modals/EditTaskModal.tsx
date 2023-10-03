@@ -29,11 +29,16 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
   const [isAddUsersOpen, setIsAddUsersOpen] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [isDateOpen, setIsDateOpen] = useState<boolean>(false);
+  const [localCurrentTask, setLocalCurrentTask] = useState<Task | null>(null);
 
   const handleDateChange = (date: React.SetStateAction<Date | null>) => {
     setSelectedDate(date);
     console.log(date);
   };
+
+  useEffect(() => {
+    setLocalCurrentTask(currentTask);
+  }, []);
 
   const handleChangeDateClick = async () => {
     setIsDateOpen(!isDateOpen);
@@ -55,6 +60,16 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
       if (response) {
         const newTasksList = await APIService.getAllListTasks();
         setTasksList(newTasksList);
+        // Create a new object for localCurrentTask with the updated dueTo.date
+        const updatedLocalCurrentTask = {
+          ...currentTask, // Copy all properties from currentTask
+          dueTo: {
+            date: selectedDate, // Update the dueTo.date property directly
+          },
+        } as Task;
+
+        // Set the updated localCurrentTask using setLocalCurrentTask
+        setLocalCurrentTask(updatedLocalCurrentTask);
         console.log(updatedDate);
       }
     }
@@ -215,7 +230,9 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
                 <p className="mr-2 font-bold ">Due to: </p>
                 {currentTask
                   ? currentTask.dueTo && currentTask.dueTo.date
-                    ? new Date(currentTask.dueTo.date).toDateString()
+                    ? localCurrentTask
+                      ? new Date(localCurrentTask.dueTo.date).toDateString()
+                      : new Date(currentTask.dueTo.date).toDateString()
                     : null
                   : null}
                 <div className="flex flex-row items-center mx-8">
@@ -229,7 +246,7 @@ export const EditTaskModal: React.FC<EditTaskModalProps> = ({
                       timeCaption="time"
                       dateFormat="yyyy-MM-dd HH:mm:ss"
                       customInput={
-                        <div className="flex flex-row items-center">
+                        <div className="flex flex-row items-center cursor-pointer">
                           <BsCalendar />
                         </div>
                       }
