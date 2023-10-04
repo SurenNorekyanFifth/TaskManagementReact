@@ -21,11 +21,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   const dueToDate = dueTo ? new Date(dueTo.date) : null;
   const isOverdue = dueToDate && dueToDate < currentDate;
 
-  useEffect(() => {
-    console.log(currentDate, "CURRENT DATE");
-    console.log(dueTo, "DUE TO");
-  }, []);
-
   return (
     <Draggable draggableId={singleTask._id} index={index} key={singleTask._id}>
       {(provided) => (

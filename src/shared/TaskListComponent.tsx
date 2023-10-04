@@ -10,16 +10,35 @@ import { APIService } from "../APIService";
 interface TaskProps {
   index: number;
   currentList: TaskList;
+  allOverDueTasks: Task[];
 }
 const apiUrl: string | undefined = process.env.REACT_APP_API_URL;
 
-export const TaskListComponent: React.FC<TaskProps> = ({ currentList }) => {
+export const TaskListComponent: React.FC<TaskProps> = ({
+  currentList,
+  allOverDueTasks,
+}) => {
   const { tasksList } = useAuth();
   const [isAddCardModalOpen, setIsAddCardModalOpen] = useState(false);
   const [isEditTaskModalOpen, setIsEditTaskModalOpen] = useState(false);
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
   const [localList, setLocalList] = useState<TaskList | null>(null);
   const [filterOption, setFilterOption] = useState("all"); // Initialize with 'all'
+  const [overdueCount, setOverdueCount] = useState<number | undefined>(0); // Initialize with 0
+  const [allTasksCount, setAllTasksCount] = useState(
+    localList?.Tasks.length || 0,
+  ); // Initialize with total task count
+
+  useEffect(() => {
+    const currentDate = new Date();
+    const overdueTasks = localList?.Tasks.filter((task) => {
+      const dueToDate = task.dueTo ? new Date(task.dueTo.date) : null;
+      return dueToDate && dueToDate < currentDate;
+    });
+
+    setAllTasksCount(localList?.Tasks.length || 0);
+    setOverdueCount(overdueTasks?.length);
+  }, [localList]);
 
   const filterTasks = (task: Task) => {
     const currentDate = new Date();
@@ -90,6 +109,17 @@ export const TaskListComponent: React.FC<TaskProps> = ({ currentList }) => {
             <option value="overdue">Overdue</option>
           </select>
         </div>
+        <button
+          onClick={() => {
+            console.log(allOverDueTasks, "ALL OVERDUE TASKS");
+          }}
+        >
+          ok
+        </button>
+
+        {filterOption === "all" && <p>Total Tasks: {allTasksCount}</p>}
+
+        {filterOption === "overdue" && <p>Overdue Tasks: {overdueCount}</p>}
 
         {localList?.Tasks.filter(filterTasks).map((singleTask, index) => (
           <TaskCard

@@ -4,11 +4,33 @@ import { TaskListComponent } from "../shared/TaskListComponent";
 import { NewList } from "../components/NewList";
 import { useAuth } from "../Context/AuthContext";
 import React, { useEffect, useState } from "react";
-import { TaskList } from "../models/models";
+import { Task, TaskList } from "../models/models";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 
 export const TaskPage = () => {
   const { getAllListTasks, tasksList, setTasksList } = useAuth();
+  const [allOverdueTasks, setAllOverdueTasks] = useState<Task[]>([]);
+
+  useEffect(() => {
+    const collectOverdueTasks = () => {
+      const currentDate = new Date();
+      let overdueTasks: Task[] = [];
+
+      tasksList?.forEach((singleTaskList) => {
+        overdueTasks = [
+          ...overdueTasks,
+          ...singleTaskList.Tasks.filter((task) => {
+            const dueToDate = task.dueTo ? new Date(task.dueTo.date) : null;
+            return dueToDate && dueToDate < currentDate;
+          }),
+        ];
+      });
+
+      setAllOverdueTasks(overdueTasks);
+    };
+
+    collectOverdueTasks();
+  }, [tasksList]);
 
   useEffect(() => {
     if (getAllListTasks) getAllListTasks();
@@ -20,7 +42,7 @@ export const TaskPage = () => {
   const onDragEnd = (
     result: DropResult,
     columns: TaskList[] | null,
-    setColumns: (columns: TaskList[] | null) => void
+    setColumns: (columns: TaskList[] | null) => void,
   ) => {
     if (!result.destination) return;
 
@@ -28,7 +50,7 @@ export const TaskPage = () => {
 
     if (columns) {
       const sourceListIndex = columns.findIndex(
-        (list) => list._id === source.droppableId
+        (list) => list._id === source.droppableId,
       );
 
       if (sourceListIndex !== -1) {
@@ -47,7 +69,7 @@ export const TaskPage = () => {
         } else {
           // If dragging to a different list, move the task
           const destListIndex = columns.findIndex(
-            (list) => list._id === destination.droppableId
+            (list) => list._id === destination.droppableId,
           );
 
           if (destListIndex !== -1) {
@@ -105,6 +127,7 @@ export const TaskPage = () => {
                   <TaskListComponent
                     index={index}
                     currentList={singleTaskList}
+                    allOverDueTasks={allOverdueTasks}
                   />
                 </div>
               )}

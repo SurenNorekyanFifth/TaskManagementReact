@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { BsListTask } from "react-icons/bs";
 import { GrChapterAdd } from "react-icons/gr";
 import { useAuth } from "../Context/AuthContext";
@@ -7,6 +7,7 @@ import { UserInfo } from "./UserInfo";
 
 export const Menu = () => {
   const { user, usersList, fetchPosts } = useAuth();
+  const [filterOption, setFilterOption] = useState("all");
   useEffect(() => {
     if (fetchPosts) {
       fetchPosts();
@@ -27,7 +28,18 @@ export const Menu = () => {
           </p>
         </div>
       </div>
-      <div className="w-1/3 flex flex-row items-center "></div>
+      <div className="w-1/3 flex flex-row items-center justify-end ">
+        <p className="cursor-pointer">
+          <select
+            value={filterOption}
+            onChange={(e) => setFilterOption(e.target.value)}
+            className="ml-2"
+          >
+            <option value="all">All</option>
+            <option value="overdue">Overdue</option>
+          </select>
+        </p>
+      </div>
       <div className="w-1/3 flex flex-row border-r-2 items-center justify-end ">
         <div className="w-1/2 flex flex-row justify-end items-center text-5xl px-8">
           {<GrChapterAdd className="cursor-pointer" />}
