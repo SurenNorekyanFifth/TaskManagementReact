@@ -32,9 +32,9 @@ export const Menu = () => {
         <div className="w-1/2 flex flex-row justify-end items-center text-5xl px-8">
           {<GrChapterAdd className="cursor-pointer" />}
         </div>
-        <div className="w-1/2 flex flex-row justify-center items-center text-5xl px-8">
+        <div className="w-1/2 flex flex-row justify-center items-center text-5xl mx-8">
           <p className="text-2xl pr-4">{user?.name}</p>
-          {user ? <UserInfo user={user} width="16" height="16" /> : null}
+          {user ? <UserInfo user={user} width={"16"} height={"16"} /> : null}
         </div>
       </div>
     </div>

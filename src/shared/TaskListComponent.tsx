@@ -19,6 +19,21 @@ export const TaskListComponent: React.FC<TaskProps> = ({ currentList }) => {
   const [isEditTaskModalOpen, setIsEditTaskModalOpen] = useState(false);
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
   const [localList, setLocalList] = useState<TaskList | null>(null);
+  const [filterOption, setFilterOption] = useState("all"); // Initialize with 'all'
+
+  const filterTasks = (task: Task) => {
+    const currentDate = new Date();
+    const dueToDate = task.dueTo ? new Date(task.dueTo.date) : null;
+
+    switch (filterOption) {
+      case "all":
+        return true;
+      case "overdue":
+        return dueToDate && dueToDate < currentDate;
+      default:
+        return true;
+    }
+  };
   useEffect(() => {
     setLocalList(currentList);
   }, []);
@@ -66,9 +81,17 @@ export const TaskListComponent: React.FC<TaskProps> = ({ currentList }) => {
       <div className="w-11/12 flex flex-col">
         <div className="w-full flex flex-row p-4">
           <p className="text-xl font-bold">{currentList.name}</p>
+          <select
+            value={filterOption}
+            onChange={(e) => setFilterOption(e.target.value)}
+            className="ml-2"
+          >
+            <option value="all">All</option>
+            <option value="overdue">Overdue</option>
+          </select>
         </div>
 
-        {localList?.Tasks.map((singleTask, index) => (
+        {localList?.Tasks.filter(filterTasks).map((singleTask, index) => (
           <TaskCard
             singleTask={singleTask}
             setCurrentTask={setCurrentTask}

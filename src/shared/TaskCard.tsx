@@ -1,5 +1,5 @@
 import { BiImages } from "react-icons/bi";
-import React from "react";
+import React, { useEffect } from "react";
 import { Task } from "../models/models";
 import { Draggable } from "react-beautiful-dnd";
 import { UserInfo } from "./UserInfo";
@@ -16,6 +16,16 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   openEditTaskModal,
   index,
 }) => {
+  const dueTo = singleTask?.dueTo;
+  const currentDate = new Date();
+  const dueToDate = dueTo ? new Date(dueTo.date) : null;
+  const isOverdue = dueToDate && dueToDate < currentDate;
+
+  useEffect(() => {
+    console.log(currentDate, "CURRENT DATE");
+    console.log(dueTo, "DUE TO");
+  }, []);
+
   return (
     <Draggable draggableId={singleTask._id} index={index} key={singleTask._id}>
       {(provided) => (
@@ -43,6 +53,17 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                 <UserInfo user={singleUser} key={singleUser?._id} />
               ))}
             </div>
+          </div>
+          <div
+            className={`w-full flex flex-row my-2 ${
+              isOverdue ? "text-red-700" : "text-green-700"
+            }`}
+          >
+            {isOverdue
+              ? "Overdue"
+              : dueTo
+              ? `Due until: ${new Date(dueTo.date).toDateString()}`
+              : ""}
           </div>
         </div>
       )}
